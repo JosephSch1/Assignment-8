@@ -2,7 +2,6 @@ package com.coderscampus.assignment;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -18,10 +17,10 @@ public class AssignmentApplication {
 		List<Integer> nums = Collections.synchronizedList(new ArrayList<>(1000));
 		
 		List<CompletableFuture<Void>> tasks = new ArrayList<>();
-		ExecutorService cached = Executors.newCachedThreadPool();
+		ExecutorService cachedExecutor = Executors.newCachedThreadPool();
 		
 		for (int i = 0; i < 1000; i++) {
-			CompletableFuture<Void> task = CompletableFuture.supplyAsync(() -> txt.getNumbers(), cached)
+			CompletableFuture<Void> task = CompletableFuture.supplyAsync(() -> txt.getNumbers(), cachedExecutor)
 									.thenAccept(number -> nums.addAll(number));
 			tasks.add(task);
 		}
@@ -40,6 +39,8 @@ public class AssignmentApplication {
 		
 		System.out.println("Number occurences from the output.txt file: ");
 		System.out.println(counts);
+		
+		cachedExecutor.shutdown();
 	}
 
 }
